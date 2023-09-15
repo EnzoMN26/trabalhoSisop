@@ -65,9 +65,13 @@ public class Programa {
 
     public void verificaInstrucoes() {
         instrucoes.values().forEach(i -> rodaInstrucao(i));
+        System.out.println(pc);
     }
 
     public void rodaInstrucao(String value) {
+
+        // switch verifica instrucao e, caso exista, incrementa o pc
+        // caso nao exista ele retorna e nao incrementa o pc
         switch (value.split(" ")[0]) {
             case "add":
                 System.out.println("add");
@@ -103,8 +107,9 @@ public class Programa {
 
                 break;
             default:
-                break;
+                return;
         }
+        pc++;
     }
 
     public String getPath() {
