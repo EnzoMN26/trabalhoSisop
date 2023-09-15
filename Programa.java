@@ -49,7 +49,7 @@ public class Programa {
                         dados.put(chave++, line);
 
                         // atualiza a proxima linha
-                        line = br.readLine();
+                        line = br.readLine().trim();
                     }
                 }
             }
