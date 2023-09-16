@@ -8,15 +8,18 @@ public class Programa {
     private int pc; //contator de em qual instrucao esta o programa
     private int periodo; //duracao do programa
     private int acc; //acumulador onde serao realizadas as operacoes
+    private boolean status;
     private HashMap<Integer, String> instrucoes; //codigo do programa
     private HashMap<String, Integer> dados; //dados de entrada do programa
     private HashMap<String, Integer> labels; //loops no programa
+
 
     public Programa(String path) {
         this.path = path;
         this.pc = 0;
         this.periodo = 0;
         this.acc = 0;
+        this.status = true;
         instrucoes = new HashMap<Integer, String>();
         dados = new HashMap<String, Integer>();
         labels = new HashMap<String, Integer>();
@@ -86,8 +89,8 @@ public class Programa {
     public void rodaInstrucao() {
 
         String[] instrucao = instrucoes.get(pc).split(" ");
-        String acao = instrucao[0];
-        String op = instrucao[1];
+        String acao = instrucao[0].trim();
+        String op = instrucao[1].trim();
 
         // switch verifica instrucao e, caso exista, incrementa o pc
         // caso nao exista ele retorna e nao incrementa o pc
@@ -131,18 +134,33 @@ public class Programa {
                 dados.put(op, acc);
                 break;
             case "brany":
+                pc = labels.get(op);
                 break;
             case "brpos":
-
+                if(acc > 0){
+                    pc = labels.get(op);
+                }
                 break;
             case "brzero":
-
+                if(acc == 0){
+                    pc = labels.get(op);
+                }
                 break;
             case "brneg":
-
+                if(acc < 0){
+                    pc = labels.get(op);
+                }
                 break;
             case "syscall":
-
+                if(Integer.parseInt(op) == 0){
+                    status = false;
+                }
+                else if(Integer.parseInt(op) == 1){
+                    System.out.println(acc);
+                }
+                else if(Integer.parseInt(op) == 2){
+                    //VER CERTINHO COMO TEM QUE FAZER A LEITURA DE VARIAVEL JUNTO COM O BLOQUEIO DO PROGRAMA
+                }
                 break;
             default:
                 return;
