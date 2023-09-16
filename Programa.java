@@ -82,6 +82,7 @@ public class Programa {
         return line.replaceAll("# .*", "").trim();
     }
 
+    //roda a instrucao para qual o pc esta apontando
     public void rodaInstrucao() {
 
         String[] instrucao = instrucoes.get(pc).split(" ");
@@ -120,13 +121,16 @@ public class Programa {
                 }
                 break;
             case "load":
-                System.out.println("load");
+                if(op.contains("#")){
+                    acc = Integer.parseInt(op.replace("#", ""));
+                }else{
+                    acc = dados.get(op);
+                }
                 break;
             case "store":
-                System.out.println("store");
+                dados.put(op, acc);
                 break;
             case "brany":
-
                 break;
             case "brpos":
 
