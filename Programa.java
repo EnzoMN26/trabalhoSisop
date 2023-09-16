@@ -84,22 +84,40 @@ public class Programa {
 
     public void rodaInstrucao() {
 
-        String acao = instrucoes.get(pc);
-        
+        String[] instrucao = instrucoes.get(pc).split(" ");
+        String acao = instrucao[0];
+        String op = instrucao[1];
+
         // switch verifica instrucao e, caso exista, incrementa o pc
         // caso nao exista ele retorna e nao incrementa o pc
-        switch (acao.split(" ")[0]) {
+        switch (acao) {
             case "add":
-                System.out.println("add");
+                if(op.contains("#")){
+                    acc += Integer.parseInt(op.replace("#", ""));
+                }else{
+                    acc += dados.get(op);
+                }
                 break;
             case "sub":
-                System.out.println("sub");
+                if(op.contains("#")){
+                    acc -= Integer.parseInt(op.replace("#", ""));
+                }else{
+                    acc -= dados.get(op);
+                }
                 break;
             case "mult":
-
+                if(op.contains("#")){
+                    acc *= Integer.parseInt(op.replace("#", ""));
+                }else{
+                    acc *= dados.get(op);
+                }
                 break;
             case "div":
-
+                if(op.contains("#")){
+                    acc /= Integer.parseInt(op.replace("#", ""));
+                }else{
+                    acc /= dados.get(op);
+                }
                 break;
             case "load":
                 System.out.println("load");
