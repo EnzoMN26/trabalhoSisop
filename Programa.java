@@ -5,15 +5,21 @@ import java.util.HashMap;
 
 public class Programa {
     private String path;
-    private int pc;
-    private HashMap<Integer, String> instrucoes;
-    private HashMap<Integer, String> dados;
+    private int pc; //contator de em qual instrucao esta o programa
+    private int periodo; //duracao do programa
+    private int acc; //acumulador onde serao realizadas as operacoes
+    private HashMap<Integer, String> instrucoes; //codigo do programa
+    private HashMap<String, Integer> dados; //dados de entrada do programa
+    private HashMap<String, Integer> labels; //loops no programa
 
     public Programa(String path) {
         this.path = path;
         this.pc = 0;
+        this.periodo = 0;
+        this.acc = 0;
         instrucoes = new HashMap<Integer, String>();
-        dados = new HashMap<Integer, String>();
+        dados = new HashMap<String, Integer>();
+        labels = new HashMap<String, Integer>();
         lePrograma(path);
     }
 
@@ -27,52 +33,62 @@ public class Programa {
             BufferedReader br = new BufferedReader(fr);
             String line = "";
 
+            //faz a leitura do arquivo até a liha .enddata
             while (!line.contains(".enddata")) {
-                line = br.readLine();
+                line = cleanLine(br.readLine());
+                //faz a leitura da area .code
                 if (line.contains(".code")) {
-                    line = br.readLine().trim();
+                    line = cleanLine(br.readLine());
                     while (!line.contains(".endcode")) {
                         // cria hashmap para ler todas as instrucoes
-                        instrucoes.put(chave++, line);
-
+                        if(line.contains(":")){
+                            labels.put(line.trim().replaceAll(":", ""), chave);
+                        }else{
+                            instrucoes.put(chave++, line);
+                            periodo++;
+                        }
                         // atualiza a proxima linha
-                        line = br.readLine().trim();
+                        line = cleanLine(br.readLine());
                     }
                 }
 
                 chave = 0;
 
+                //faz a leitura da area .data
                 if (line.contains(".data")) {
-                    line = br.readLine().replace("\r", "").trim();
+                    line = cleanLine(br.readLine());
                     while (!line.contains(".enddata")) {
                         // cria hashmap para ler todas as instrucoes
-                        dados.put(chave++, line);
+                        String[] aux = line.split(" ");
+                        dados.put(aux[0], Integer.parseInt(aux[1]));
 
                         // atualiza a proxima linha
-                        line = br.readLine().trim();
+                        line = cleanLine(br.readLine());
                     }
                 }
             }
             System.out.println(instrucoes);
             System.out.println(dados);
+            System.out.println(labels);
             br.close();
 
-            verificaInstrucoes();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void verificaInstrucoes() {
-        instrucoes.values().forEach(i -> rodaInstrucao(i));
-        System.out.println(pc);
+    //funcao para limpar os comentarios de cada linha do programa
+    public String cleanLine(String line){
+        return line.replaceAll("# .*", "").trim();
     }
 
-    public void rodaInstrucao(String value) {
+    public void rodaInstrucao() {
 
+        String acao = instrucoes.get(pc);
+        
         // switch verifica instrucao e, caso exista, incrementa o pc
         // caso nao exista ele retorna e nao incrementa o pc
-        switch (value.split(" ")[0]) {
+        switch (acao.split(" ")[0]) {
             case "add":
                 System.out.println("add");
                 break;
