@@ -3,23 +3,23 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
 
-public class Programa {
+public class Processo {
     private String path;
     private int pc; //contator de em qual instrucao esta o programa
-    private int periodo; //duracao do programa
+    private Integer periodo; //duracao do programa
     private int acc; //acumulador onde serao realizadas as operacoes
-    private boolean status;
+    private int status; // 0 = terminou | 1 = em execucao | 2 = bloqueado
     private HashMap<Integer, String> instrucoes; //codigo do programa
     private HashMap<String, Integer> dados; //dados de entrada do programa
     private HashMap<String, Integer> labels; //loops no programa
 
 
-    public Programa(String path) {
+    public Processo(String path, Integer periodo) {
         this.path = path;
         this.pc = 0;
-        this.periodo = 0;
+        this.periodo = periodo;
         this.acc = 0;
-        this.status = true;
+        this.status = 1;
         instrucoes = new HashMap<Integer, String>();
         dados = new HashMap<String, Integer>();
         labels = new HashMap<String, Integer>();
@@ -48,7 +48,6 @@ public class Programa {
                             labels.put(line.trim().replaceAll(":", ""), chave);
                         }else{
                             instrucoes.put(chave++, line);
-                            periodo++;
                         }
                         // atualiza a proxima linha
                         line = cleanLine(br.readLine());
@@ -70,9 +69,9 @@ public class Programa {
                     }
                 }
             }
-            System.out.println(instrucoes);
-            System.out.println(dados);
-            System.out.println(labels);
+            //System.out.println(instrucoes);
+            //System.out.println(dados);
+            //System.out.println(labels);
             br.close();
 
         } catch (Exception e) {
@@ -153,13 +152,15 @@ public class Programa {
                 break;
             case "syscall":
                 if(Integer.parseInt(op) == 0){
-                    status = false;
+                    status = 0;
                 }
                 else if(Integer.parseInt(op) == 1){
                     System.out.println(acc);
+                    status = 2;
                 }
                 else if(Integer.parseInt(op) == 2){
                     //VER CERTINHO COMO TEM QUE FAZER A LEITURA DE VARIAVEL JUNTO COM O BLOQUEIO DO PROGRAMA
+                    status = 2;
                 }
                 break;
             default:
@@ -170,5 +171,13 @@ public class Programa {
 
     public String getPath() {
         return path;
+    }
+
+    public int getStatus(){
+        return status;
+    }
+
+    public Integer getPeriodo(){
+        return periodo;
     }
 }
