@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.Random;
 
 public class Processo {
     private String path;
@@ -12,7 +13,7 @@ public class Processo {
     private HashMap<Integer, String> instrucoes; //codigo do programa
     private HashMap<String, Integer> dados; //dados de entrada do programa
     private HashMap<String, Integer> labels; //loops no programa
-
+    private int tempoBloqueado;
 
     public Processo(String path, Integer periodo) {
         this.path = path;
@@ -20,6 +21,7 @@ public class Processo {
         this.periodo = periodo;
         this.acc = 0;
         this.status = 1;
+        this.tempoBloqueado = 0;
         instrucoes = new HashMap<Integer, String>();
         dados = new HashMap<String, Integer>();
         labels = new HashMap<String, Integer>();
@@ -86,7 +88,7 @@ public class Processo {
 
     //roda a instrucao para qual o pc esta apontando
     public void rodaInstrucao() {
-
+        Random rand = new Random();
         String[] instrucao = instrucoes.get(pc).split(" ");
         String acao = instrucao[0].trim();
         String op = instrucao[1].trim();
@@ -159,7 +161,7 @@ public class Processo {
                     status = 2;
                 }
                 else if(Integer.parseInt(op) == 2){
-                    //VER CERTINHO COMO TEM QUE FAZER A LEITURA DE VARIAVEL JUNTO COM O BLOQUEIO DO PROGRAMA
+                    tempoBloqueado = rand.nextInt(1,3);
                     status = 2;
                 }
                 break;
@@ -179,5 +181,13 @@ public class Processo {
 
     public Integer getPeriodo(){
         return periodo;
+    }
+
+    public int getTempoBloqueado() {
+        return tempoBloqueado;
+    }
+
+    public void reduzTempoBloqueado() {
+        this.tempoBloqueado = tempoBloqueado-1;
     }
 }
