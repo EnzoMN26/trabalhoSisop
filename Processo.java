@@ -85,7 +85,7 @@ public class Processo {
 
     //funcao para limpar os comentarios de cada linha do programa
     public String cleanLine(String line){
-        return line.replaceAll("# .*", "").trim();
+        return line.replaceAll("# .*", "").toLowerCase().trim();
     }
 
     //roda a instrucao para qual o pc esta apontando
@@ -93,8 +93,10 @@ public class Processo {
         Random rand = new Random();
         String[] instrucao = instrucoes.get(pc).split(" ");
         String acao = instrucao[0].trim();
-        String op = instrucao[1].trim();
+        String op = instrucao[1].trim();     
+        status = 1;
         
+
         if(tempComp <= 0){
             status = 0;
             return;
@@ -160,11 +162,13 @@ public class Processo {
                 }
                 break;
             case "syscall":
+                
                 if(Integer.parseInt(op) == 0){
                     status = 0;
                 }
                 else if(Integer.parseInt(op) == 1){
-                    System.out.println(acc);
+                    System.out.println("Syscall 2 : " + acc);
+                    tempoBloqueado = rand.nextInt(1,3);
                     status = 2;
                 }
                 else if(Integer.parseInt(op) == 2){
@@ -201,5 +205,9 @@ public class Processo {
 
     public void reduzTempoBloqueado() {
         this.tempoBloqueado = tempoBloqueado-1;
+    }
+
+    public String toString(){
+        return path;
     }
 }
