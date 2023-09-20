@@ -86,9 +86,9 @@ public class Processo {
                     }
                 }
             }
-            System.out.println(instrucoes);
-            System.out.println(dados);
-            System.out.println(labels);
+            // System.out.println(instrucoes);
+            // System.out.println(dados);
+            // System.out.println(labels);
             br.close();
 
         } catch (Exception e) {

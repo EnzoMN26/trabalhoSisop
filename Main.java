@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
@@ -16,7 +15,7 @@ public class Main {
         int periodo;
         int tempComp;
         int tempoAguardando;
-
+        boolean execucaoValida;
         boolean entraInterface = true;
 
         // ready.add(new Processo("./prog1.txt", 10, 9));
@@ -42,7 +41,7 @@ public class Main {
             if(tempoAguardando > 0 ) 
                 aguardando.add(new Processo(programa+".txt", periodo, tempComp, tempoAguardando));
             else
-                ready.add(new Processo(programa+".txt", periodo, tempComp, tempoAguardando));
+                ready.add(new Processo(programa+".txt", periodo, tempComp, 0));
             System.out.println("Deseja adicionar outro programa?");
             System.out.println("1- Sim   0- Não");
             int saida = teclado.nextInt();
@@ -52,7 +51,7 @@ public class Main {
         }
 
         while(ready.size() > 0 || blocked.size() > 0 || deadlineAtingida.size() > 0 || aguardando.size() > 0){
-              
+            execucaoValida = true;
             if(ready.isEmpty() && deadlineAtingida.isEmpty()){
                     contadorTempo++;
             }else{
@@ -81,6 +80,7 @@ public class Main {
                         registroDeadline.add(prioritario.getPath() + " | Perda de Deadline em: " + contadorTempo);
                     }
                     prioritario.setaDeadline();
+                    execucaoValida = false;
                 }else{
                     
                     prioritario.rodaInstrucao(); //executa uma instrucao do processo
@@ -104,30 +104,33 @@ public class Main {
                     System.out.println("FINALIZADOS : " + finalizados.toString());
                     System.out.println("\n-------------------------------------------------------------------");
                 }
-            }  
+            } 
 
-            for(int i = 0; i<blocked.size();i++){
+            if(execucaoValida){
+                for(int i = 0; i<blocked.size();i++){
 
-                System.out.println("\n------------"+blocked.get(i).toString() + " tempo bloqueado :" + blocked.get(i).getTempoBloqueado()+"------------");
-                blocked.get(i).reduzTempoBloqueado();
+                    System.out.println("\n------------"+blocked.get(i).toString() + " Tempo bloqueado :" + blocked.get(i).getTempoBloqueado()+"------------");
+                    blocked.get(i).reduzTempoBloqueado();
 
-                if(blocked.get(i).getTempoBloqueado() == 0){
-                    ready.add(blocked.get(i));
-                    blocked.remove(i);
-                }
-            }  
+                    if(blocked.get(i).getTempoBloqueado() == 0){
+                        ready.add(blocked.get(i));
+                        blocked.remove(i);
+                        i--;
+                    }
+                }  
 
-            for(int i = 0; i<aguardando.size();i++){
+                for(int i = 0; i<aguardando.size();i++){
 
-                System.out.println("\n------------"+aguardando.get(i).toString() + " Tempo Aguardando :" + aguardando.get(i).getTempoAguardando()+"------------");
-                aguardando.get(i).reduzTempoAguardando();
+                    System.out.println("\n------------"+aguardando.get(i).toString() + " Tempo Aguardando :" + aguardando.get(i).getTempoAguardando()+"------------");
+                    aguardando.get(i).reduzTempoAguardando();
 
-                if(aguardando.get(i).getTempoAguardando() == 0){
-                    ready.add(aguardando.get(i));
-                    aguardando.remove(i);
-                }
-            }  
-            
+                    if(aguardando.get(i).getTempoAguardando() == 0){
+                        ready.add(aguardando.get(i));
+                        aguardando.remove(i);
+                        i--;
+                    }
+                }  
+            }
         }
         System.out.println(registroDeadline.toString());
         System.out.println("-------FIM-------");
