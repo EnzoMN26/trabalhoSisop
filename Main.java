@@ -14,7 +14,7 @@ public class Main {
         int periodo;
         int tempComp;
         int tempoAguardando;
-
+        boolean execucaoValida;
         boolean entraInterface = true;
 
         // ready.add(new Processo("./prog1.txt", 10, 9));
@@ -40,7 +40,7 @@ public class Main {
             if(tempoAguardando > 0 ) 
                 aguardando.add(new Processo(programa+".txt", periodo, tempComp, tempoAguardando));
             else
-                ready.add(new Processo(programa+".txt", periodo, tempComp, tempoAguardando));
+                ready.add(new Processo(programa+".txt", periodo, tempComp, 0));
             System.out.println("Deseja adicionar outro programa?");
             System.out.println("1- Sim   0- Não");
             int saida = teclado.nextInt();
@@ -51,7 +51,7 @@ public class Main {
         teclado.close();
 
         while(ready.size() > 0 || blocked.size() > 0 || deadlineAtingida.size() > 0 || aguardando.size() > 0){
-              
+            execucaoValida = true;
             if(ready.isEmpty() && deadlineAtingida.isEmpty()){
                     contadorTempo++;
             }else{
@@ -76,6 +76,7 @@ public class Main {
                 if(prioritario.getPeriodo() <= contadorTempo && prioridadeMaxima == false){ //se o processo tiver atingido seu deadline é removido do ready e adicionado na lista de vencidos
                     deadlineAtingida.add(prioritario);
                     ready.remove(0);
+                    execucaoValida = false;
                 }else{
                     
                     prioritario.rodaInstrucao(); //executa uma instrucao do processo
@@ -97,29 +98,33 @@ public class Main {
                     System.out.println("BLOQUEADOS : "+blocked.toString());
                     System.out.println("ATINGIRAM DEADLINES : " + deadlineAtingida.toString());
                     System.out.println("FINALIZADOS : " + finalizados.toString());
-                    System.out.println("\n\n\n\n\n");
+                    System.out.println("----------------------------\n\n");
                 }
-            }  
+            } 
 
-            for(int i = 0; i<blocked.size();i++){
+            if(execucaoValida){
+                for(int i = 0; i<blocked.size();i++){
 
-                System.out.println("------------"+blocked.get(i).toString() + " tempo bloqueado :" + blocked.get(i).getTempoBloqueado()+"------------\n");
-                blocked.get(i).reduzTempoBloqueado();
+                    System.out.println("------------"+blocked.get(i).toString() + " tempo bloqueado :" + blocked.get(i).getTempoBloqueado()+"------------\n");
+                    blocked.get(i).reduzTempoBloqueado();
 
-                if(blocked.get(i).getTempoBloqueado() == 0){
-                    ready.add(blocked.get(i));
-                    blocked.remove(i);
-                }
-            }  
+                    if(blocked.get(i).getTempoBloqueado() == 0){
+                        ready.add(blocked.get(i));
+                        blocked.remove(i);
+                        i--;
+                    }
+                }  
 
-            for(int i = 0; i<aguardando.size();i++){
+                for(int i = 0; i<aguardando.size();i++){
 
-                System.out.println("------------"+aguardando.get(i).toString() + " Tempo Aguardando :" + aguardando.get(i).getTempoAguardando()+"------------\n");
-                aguardando.get(i).reduzTempoAguardando();
-
-                if(aguardando.get(i).getTempoAguardando() == 0){
-                    ready.add(aguardando.get(i));
-                    aguardando.remove(i);
+                    System.out.println("------------"+aguardando.get(i).toString() + " Tempo Aguardando :" + aguardando.get(i).getTempoAguardando()+"------------\n");
+                    aguardando.get(i).reduzTempoAguardando();
+                    
+                    if(aguardando.get(i).getTempoAguardando() == 0){
+                        ready.add(aguardando.get(i));
+                        aguardando.remove(i);
+                        i--;
+                    }
                 }
             }  
             
