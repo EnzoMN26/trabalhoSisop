@@ -8,6 +8,7 @@ public class Processo {
     private String path;
     private int pc; //contator de em qual instrucao esta o programa
     private Integer periodo; //duracao do programa
+    private int tempComp; // tempo de computacao
     private int acc; //acumulador onde serao realizadas as operacoes
     private int status; // 0 = terminou | 1 = em execucao | 2 = bloqueado
     private HashMap<Integer, String> instrucoes; //codigo do programa
@@ -15,13 +16,14 @@ public class Processo {
     private HashMap<String, Integer> labels; //loops no programa
     private int tempoBloqueado;
 
-    public Processo(String path, Integer periodo) {
+    public Processo(String path, Integer periodo, int tempComp) {
         this.path = path;
         this.pc = 0;
         this.periodo = periodo;
         this.acc = 0;
         this.status = 1;
         this.tempoBloqueado = 0;
+        this.tempComp = tempComp;
         instrucoes = new HashMap<Integer, String>();
         dados = new HashMap<String, Integer>();
         labels = new HashMap<String, Integer>();
@@ -92,6 +94,11 @@ public class Processo {
         String[] instrucao = instrucoes.get(pc).split(" ");
         String acao = instrucao[0].trim();
         String op = instrucao[1].trim();
+        
+        if(tempComp <= 0){
+            status = 0;
+            return;
+        }
 
         // switch verifica instrucao e, caso exista, incrementa o pc
         // caso nao exista ele retorna e nao incrementa o pc
@@ -168,7 +175,12 @@ public class Processo {
             default:
                 return;
         }
+        tempComp--;
         pc++;
+        if(tempComp <= 0){
+            status = 0;
+            return;
+        }
     }
 
     public String getPath() {
