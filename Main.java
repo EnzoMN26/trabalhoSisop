@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
@@ -9,6 +10,7 @@ public class Main {
         ArrayList<Processo> aguardando = new ArrayList<>();
         ArrayList<Processo> deadlineAtingida = new ArrayList<>();
         ArrayList<Processo> finalizados = new ArrayList<>();
+        ArrayList<String> registroDeadline = new ArrayList<>();
         int contadorTempo = 0;
         String programa;
         int periodo;
@@ -46,9 +48,8 @@ public class Main {
             int saida = teclado.nextInt();
             teclado.nextLine();
             entraInterface = saida == 0 ? false : true;
+            System.out.println("\n\n\n");
         }
-
-        teclado.close();
 
         while(ready.size() > 0 || blocked.size() > 0 || deadlineAtingida.size() > 0 || aguardando.size() > 0){
               
@@ -76,6 +77,10 @@ public class Main {
                 if(prioritario.getPeriodo() <= contadorTempo && prioridadeMaxima == false){ //se o processo tiver atingido seu deadline é removido do ready e adicionado na lista de vencidos
                     deadlineAtingida.add(prioritario);
                     ready.remove(0);
+                    if(!prioritario.getDeadline()){
+                        registroDeadline.add(prioritario.getPath() + " | Perda de Deadline em: " + contadorTempo);
+                    }
+                    prioritario.setaDeadline();
                 }else{
                     
                     prioritario.rodaInstrucao(); //executa uma instrucao do processo
@@ -90,20 +95,20 @@ public class Main {
                         fila.remove(0);
                     }
                     contadorTempo++;
-                    System.out.println("ContadorTempo : "+contadorTempo);
+                    System.out.println("\nContadorTempo : "+contadorTempo);
                     System.out.println("Rodando : " + prioritario.toString());
-                    System.out.println("-------------------- periodo : " + prioritario.getPeriodo());
+                    System.out.println("--------------------\nDEADLINE : " + prioritario.getPeriodo());
                     System.out.println("PRONTOS : " + ready.toString());
                     System.out.println("BLOQUEADOS : "+blocked.toString());
                     System.out.println("ATINGIRAM DEADLINES : " + deadlineAtingida.toString());
                     System.out.println("FINALIZADOS : " + finalizados.toString());
-                    System.out.println("\n\n\n\n\n");
+                    System.out.println("\n-------------------------------------------------------------------");
                 }
             }  
 
             for(int i = 0; i<blocked.size();i++){
 
-                System.out.println("------------"+blocked.get(i).toString() + " tempo bloqueado :" + blocked.get(i).getTempoBloqueado()+"------------\n");
+                System.out.println("\n------------"+blocked.get(i).toString() + " tempo bloqueado :" + blocked.get(i).getTempoBloqueado()+"------------");
                 blocked.get(i).reduzTempoBloqueado();
 
                 if(blocked.get(i).getTempoBloqueado() == 0){
@@ -114,7 +119,7 @@ public class Main {
 
             for(int i = 0; i<aguardando.size();i++){
 
-                System.out.println("------------"+aguardando.get(i).toString() + " Tempo Aguardando :" + aguardando.get(i).getTempoAguardando()+"------------\n");
+                System.out.println("\n------------"+aguardando.get(i).toString() + " Tempo Aguardando :" + aguardando.get(i).getTempoAguardando()+"------------");
                 aguardando.get(i).reduzTempoAguardando();
 
                 if(aguardando.get(i).getTempoAguardando() == 0){
@@ -124,6 +129,7 @@ public class Main {
             }  
             
         }
+        System.out.println(registroDeadline.toString());
         System.out.println("-------FIM-------");
     }
     public static void sort(ArrayList<Processo> list) {

@@ -1,0 +1,41 @@
+.code
+  load a
+  add #1
+  store a
+  syscall 2		# digitar numero 2: acc<- 2
+  store numero		# pmem[numero] <- 2
+  syscall 0
+  fim:
+  load b		# acc <- 3
+  syscall 1		# print 3
+  syscall 0		# exit
+
+loop: sub controle		# acc <- 2-2=0
+  BRZERO fim		# salta
+  load numero
+  div controle
+  add b
+  store aux
+  load b
+  store f
+  load aux
+  store b
+  load controle
+  sub #1
+  store controle
+  BRANY loop
+.endcode
+
+.data
+  a 10
+  numero 0
+  controle 2
+  aux 0
+  b 3
+  f 0
+.enddata
+
+Acc <- 10
+Acc <- 10+1 = 11
+PMEM[a] <- 11
+exit

@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Processo {
     private String path;
@@ -16,6 +17,8 @@ public class Processo {
     private HashMap<String, Integer> labels; //loops no programa
     private int tempoBloqueado;
     private int tempoAguardando;
+    private boolean deadlineVencido;
+    private Scanner teclado;
 
     public Processo(String path, Integer periodo, int tempComp, int tempoAguardando) {
         this.path = path;
@@ -26,9 +29,11 @@ public class Processo {
         this.tempoBloqueado = 0;
         this.tempComp = tempComp;
         this.tempoAguardando = tempoAguardando;
-        instrucoes = new HashMap<Integer, String>();
-        dados = new HashMap<String, Integer>();
-        labels = new HashMap<String, Integer>();
+        this.deadlineVencido = false;
+        this.instrucoes = new HashMap<Integer, String>();
+        this.dados = new HashMap<String, Integer>();
+        this.labels = new HashMap<String, Integer>();
+        this.teclado = new Scanner(System.in);
         lePrograma(path);
     }
 
@@ -51,7 +56,13 @@ public class Processo {
                     while (!line.contains(".endcode")) {
                         // cria hashmap para ler todas as instrucoes
                         if(line.contains(":")){
-                            labels.put(line.trim().replaceAll(":", ""), chave);
+                            String[] temp = line.trim().split(":");
+                            if (temp.length > 1){
+                                labels.put(temp[0].trim().replaceAll(":", ""), chave);
+                                instrucoes.put(chave++, temp[1].trim());
+                            }else{
+                                labels.put(line.trim().replaceAll(":", ""), chave);
+                            }
                         }else{
                             instrucoes.put(chave++, line);
                         }
@@ -75,9 +86,9 @@ public class Processo {
                     }
                 }
             }
-            //System.out.println(instrucoes);
-            //System.out.println(dados);
-            //System.out.println(labels);
+            System.out.println(instrucoes);
+            System.out.println(dados);
+            System.out.println(labels);
             br.close();
 
         } catch (Exception e) {
@@ -147,20 +158,24 @@ public class Processo {
                 break;
             case "brany":
                 pc = labels.get(op);
+                pc--;
                 break;
             case "brpos":
                 if(acc > 0){
                     pc = labels.get(op);
+                    pc--;
                 }
                 break;
             case "brzero":
                 if(acc == 0){
                     pc = labels.get(op);
+                    pc--;
                 }
                 break;
             case "brneg":
                 if(acc < 0){
                     pc = labels.get(op);
+                    pc--;
                 }
                 break;
             case "syscall":
@@ -169,13 +184,15 @@ public class Processo {
                     status = 0;
                 }
                 else if(Integer.parseInt(op) == 1){
-                    System.out.println("Syscall 2 : " + acc);
+                    System.out.println("Valor do acumulador: " + acc);
                     tempoBloqueado = rand.nextInt(1,3);
                     status = 2;
                 }
                 else if(Integer.parseInt(op) == 2){
                     tempoBloqueado = rand.nextInt(1,3);
                     status = 2;
+                    System.out.println("Digite um numero inteiro: ");
+                    acc = teclado.nextInt();
                 }
                 break;
             default:
@@ -215,6 +232,14 @@ public class Processo {
 
     public void reduzTempoBloqueado() {
         this.tempoBloqueado = tempoBloqueado-1;
+    }
+
+    public void setaDeadline(){
+        this.deadlineVencido = true;
+    }
+
+    public boolean getDeadline() {
+        return this.deadlineVencido;
     }
 
     public String toString(){
