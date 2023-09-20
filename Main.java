@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
 
@@ -8,10 +9,39 @@ public class Main {
         ArrayList<Processo> deadlineAtingida = new ArrayList<>();
         ArrayList<Processo> finalizados = new ArrayList<>();
         int contadorTempo = 0;
+        String programa;
+        int periodo;
+        int tempComp;
 
-        ready.add(new Processo("./prog1.txt", 100, 100));
-        ready.add(new Processo("./prog2.txt",100, 100));
-        ready.add(new Processo("./prog3.txt", 100, 100));
+        boolean entraInterface = true;
+
+        // ready.add(new Processo("./prog1.txt", 10, 9));
+        // ready.add(new Processo("./prog2.txt", 15, 5));
+        // ready.add(new Processo("./prog3.txt", 17, 9));
+        
+
+        Scanner teclado = new Scanner(System.in);
+        System.out.println("Bem vindo ao macXP");
+
+        while(entraInterface){
+            System.out.print("Digite o nome do programa que deseja executar: ");
+            programa = teclado.nextLine();
+
+            System.out.print("Digite o seu período: ");
+            periodo = teclado.nextInt();
+
+            System.out.print("Digite o seu tempo de computação: ");
+            tempComp = teclado.nextInt();
+
+            ready.add(new Processo(programa+".txt", periodo, tempComp));
+            System.out.println("Deseja adicionar outro programa?");
+            System.out.println("1- Sim   0- Não");
+            int saida = teclado.nextInt();
+            teclado.nextLine();
+            entraInterface = saida == 0 ? false : true;
+        }
+
+        teclado.close();
 
         while(ready.size() > 0 || blocked.size() > 0 || deadlineAtingida.size() > 0){
               
