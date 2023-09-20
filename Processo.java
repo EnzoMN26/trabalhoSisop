@@ -15,8 +15,9 @@ public class Processo {
     private HashMap<String, Integer> dados; //dados de entrada do programa
     private HashMap<String, Integer> labels; //loops no programa
     private int tempoBloqueado;
+    private int tempoAguardando;
 
-    public Processo(String path, Integer periodo, int tempComp) {
+    public Processo(String path, Integer periodo, int tempComp, int tempoAguardando) {
         this.path = path;
         this.pc = 0;
         this.periodo = periodo;
@@ -24,6 +25,7 @@ public class Processo {
         this.status = 1;
         this.tempoBloqueado = 0;
         this.tempComp = tempComp;
+        this.tempoAguardando = tempoAguardando;
         instrucoes = new HashMap<Integer, String>();
         dados = new HashMap<String, Integer>();
         labels = new HashMap<String, Integer>();
@@ -201,6 +203,14 @@ public class Processo {
 
     public int getTempoBloqueado() {
         return tempoBloqueado;
+    }
+
+    public int getTempoAguardando() {
+        return tempoAguardando;
+    }
+
+    public void reduzTempoAguardando() {
+        this.tempoAguardando = tempoAguardando-1;
     }
 
     public void reduzTempoBloqueado() {

@@ -6,12 +6,14 @@ public class Main {
     public static void main(String[] args) throws Exception {
         ArrayList<Processo> ready = new ArrayList<>();
         ArrayList<Processo> blocked = new ArrayList<>();
+        ArrayList<Processo> aguardando = new ArrayList<>();
         ArrayList<Processo> deadlineAtingida = new ArrayList<>();
         ArrayList<Processo> finalizados = new ArrayList<>();
         int contadorTempo = 0;
         String programa;
         int periodo;
         int tempComp;
+        int tempoAguardando;
 
         boolean entraInterface = true;
 
@@ -33,7 +35,12 @@ public class Main {
             System.out.print("Digite o seu tempo de computação: ");
             tempComp = teclado.nextInt();
 
-            ready.add(new Processo(programa+".txt", periodo, tempComp));
+            System.out.print("Digite o tempo de espera para iniciar: ");
+            tempoAguardando = teclado.nextInt();
+            if(tempoAguardando > 0 ) 
+                aguardando.add(new Processo(programa+".txt", periodo, tempComp, tempoAguardando));
+            else
+                ready.add(new Processo(programa+".txt", periodo, tempComp, tempoAguardando));
             System.out.println("Deseja adicionar outro programa?");
             System.out.println("1- Sim   0- Não");
             int saida = teclado.nextInt();
@@ -43,7 +50,7 @@ public class Main {
 
         teclado.close();
 
-        while(ready.size() > 0 || blocked.size() > 0 || deadlineAtingida.size() > 0){
+        while(ready.size() > 0 || blocked.size() > 0 || deadlineAtingida.size() > 0 || aguardando.size() > 0){
               
             if(ready.isEmpty() && deadlineAtingida.isEmpty()){
                     contadorTempo++;
@@ -102,6 +109,17 @@ public class Main {
                 if(blocked.get(i).getTempoBloqueado() == 0){
                     ready.add(blocked.get(i));
                     blocked.remove(i);
+                }
+            }  
+
+            for(int i = 0; i<aguardando.size();i++){
+
+                System.out.println("------------"+aguardando.get(i).toString() + " Tempo Aguardando :" + aguardando.get(i).getTempoAguardando()+"------------\n");
+                aguardando.get(i).reduzTempoAguardando();
+
+                if(aguardando.get(i).getTempoAguardando() == 0){
+                    ready.add(aguardando.get(i));
+                    aguardando.remove(i);
                 }
             }  
             
