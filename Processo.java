@@ -185,11 +185,11 @@ public class Processo {
                 }
                 else if(Integer.parseInt(op) == 1){
                     System.out.println("Valor do acumulador: " + acc);
-                    tempoBloqueado = rand.nextInt(1,3);
+                    tempoBloqueado = rand.nextInt(3);
                     status = 2;
                 }
                 else if(Integer.parseInt(op) == 2){
-                    tempoBloqueado = rand.nextInt(1,3);
+                    tempoBloqueado = rand.nextInt(3);
                     status = 2;
                     System.out.println("Digite um numero inteiro: ");
                     acc = teclado.nextInt();

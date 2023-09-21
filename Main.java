@@ -10,7 +10,7 @@ public class Main {
         ArrayList<Processo> deadlineAtingida = new ArrayList<>();
         ArrayList<Processo> finalizados = new ArrayList<>();
         ArrayList<String> registroDeadline = new ArrayList<>();
-        int contadorTempo = 0;
+        int contadorTempo = 1;
         String programa;
         int periodo;
         int tempComp;
@@ -94,8 +94,8 @@ public class Main {
                         blocked.add(prioritario);
                         fila.remove(0);
                     }
-                    contadorTempo++;
                     System.out.println("\nContadorTempo : "+contadorTempo);
+                    contadorTempo++;
                     System.out.println("Rodando : " + prioritario.toString());
                     System.out.println("--------------------\nDEADLINE : " + prioritario.getPeriodo());
                     System.out.println("PRONTOS : " + ready.toString());
